@@ -56,7 +56,6 @@ function updateStations(pos) {
     });
 }
 
-// 【同期処理1】手打ちテキストが入力されたら、部分一致するセレクトボックスを自動選択
 function onTextInput(pos) {
     initData();
     let val = document.getElementById(`${pos}Input`).value.trim();
@@ -69,7 +68,6 @@ function onTextInput(pos) {
     }
 }
 
-// 【同期処理2】セレクトボックスで駅が選ばれたら、手打ちテキストに自動反映
 function onSelectInput(pos) {
     let stName = document.getElementById(`${pos}St`).value;
     document.getElementById(`${pos}Input`).value = stName;
@@ -129,7 +127,10 @@ function renderTabs() {
         };
         tabs.appendChild(tab);
     });
-    tabs.style.display = "flex"; activeRouteIdx = 0; renderActiveRoute();
+    tabs.style.display = "flex"; activeRouteIdx = 0; 
+    
+    for (let key in activeLineTypes) activeLineTypes[key] = "local"; 
+    renderActiveRoute();
 }
 
 function onLineTypeChange(lineName, newType) {
@@ -141,6 +142,39 @@ function renderActiveRoute() {
     let container = document.getElementById("result");
     let path = globalPaths[activeRouteIdx];
     let html = ""; let currLine = ""; let intermediateStack = []; let stopCount = 0;
+
+    // 【修正】各路線の乗り降り駅をチェックし、「現在選ばれている種別」が通過駅なら安全な種別に落とす
+    let lineSegments = {};
+    path.forEach((id, idx) => {
+        let st = stations.find(s => s.id === id);
+        if (!lineSegments[st.line]) lineSegments[st.line] = [];
+        lineSegments[st.line].push({ st: st, idx: idx });
+    });
+
+    for (let line in lineSegments) {
+        let seg = lineSegments[line];
+        let endpoints = [seg[0].st, seg[seg.length - 1].st]; 
+        let currentType = activeLineTypes[line];
+        
+        // 現在選択中の種別だと降りられない場合
+        let invalid = endpoints.some(st => !st.types.includes(currentType));
+        if (invalid) {
+            // ★特急がダメでも快速が停車するなら快速にする、快速もダメならローカルにするステップ判定
+            let compName = seg[0].st.comp;
+            let availableTypes = Object.keys(companyData[compName].typeColors); // ["local", "rapid", "express"] など
+            
+            let safeType = "local"; // 最悪でも普通
+            // 利用可能な種別のうち、乗り降り駅が両方停車するものの中で一番上位（配列の後ろ側）のものを探す
+            for (let i = availableTypes.length - 1; i >= 0; i--) {
+                let t = availableTypes[i];
+                if (endpoints.every(st => st.types.includes(t))) {
+                    safeType = t;
+                    break;
+                }
+            }
+            activeLineTypes[line] = safeType;
+        }
+    }
 
     function flushStack() {
         if (intermediateStack.length === 0) return "";
@@ -171,7 +205,12 @@ function renderActiveRoute() {
                 typeKeys.forEach(k => {
                     let customName = (st.comp === "霞野新都市交通" && k === "local") ? "各駅停車" : 
                                      (st.comp === "霞野新都市交通" && k === "rapid") ? "空港快速" : rawNames[k];
-                    selectHtml += `<option value="${k}" ${k === currentType ? 'selected' : ''}>${customName}</option>`;
+                    
+                    let lineStations = path.filter(pid => stations.find(s => s.id === pid).line === st.line);
+                    let myEndpoints = [lineStations[0], lineStations[lineStations.length - 1]].map(pid => stations.find(s => s.id === pid));
+                    let isDisabled = myEndpoints.some(est => !est.types.includes(k)) ? "disabled" : "";
+
+                    selectHtml += `<option value="${k}" ${k === currentType ? 'selected' : ''} ${isDisabled}>${customName}${isDisabled ? ' (停車しません)' : ''}</option>`;
                 });
                 selectHtml += `</select>`;
             }
