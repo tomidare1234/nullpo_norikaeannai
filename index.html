@@ -3,59 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>nullpo乗り換え案内</title>
+    <title>霞野エリア 総合乗換案内システム</title>
     <style>
         :root { --primary-color: #2c3e50; --accent-color: #e67e22; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 600px; margin: 30px auto; padding: 0 15px; background: #f0f2f5; color: #333; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 30px auto; padding: 0 15px; background: #f0f2f5; color: #333; }
         .app-box { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         .app-header { text-align: center; margin-bottom: 25px; }
         .company-name { font-size: 0.75rem; color: #7f8c8d; font-weight: bold; letter-spacing: 1px; }
         h1 { font-size: 1.4rem; color: #111; margin: 4px 0 15px 0; font-weight: 700; }
-        
-        /* 路線リンクボタン */
         .line-links { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 25px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 15px; }
-        .line-link-btn { padding: 6px 12px; font-size: 0.75rem; font-weight: bold; text-decoration: none; color: white; border-radius: 20px; transition: opacity 0.2s; }
-        .line-link-btn:hover { opacity: 0.8; }
-
+        .line-link-btn { padding: 6px 12px; font-size: 0.75rem; font-weight: bold; text-decoration: none; color: white; border-radius: 20px; }
         .form-section { background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #e2e8f0; position: relative; }
         .section-title { font-size: 0.85rem; font-weight: bold; color: #555; margin-bottom: 10px; }
-        
         .input-container { display: flex; flex-direction: column; gap: 8px; }
         .select-grid { display: flex; gap: 8px; }
         .select-grid select, .input-container input[type="text"] { flex: 1; padding: 10px; font-size: 0.9rem; border-radius: 6px; border: 1px solid #cbd5e1; background: white; outline: none; min-width: 0; }
         .input-container input[type="text"] { font-weight: 600; border-color: #a1b0cb; }
-        
         .suggest-box { position: absolute; background: white; border: 1px solid #cbd5e1; border-radius: 6px; max-height: 180px; overflow-y: auto; width: calc(100% - 30px); z-index: 100; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-top: 42px; }
         .suggest-item { padding: 10px; cursor: pointer; font-size: 0.9rem; display: flex; justify-content: space-between; }
-        .suggest-item .line-badge { font-size: 0.7rem; color: #7f8c8d; }
         .suggest-item:hover { background: #f1f5f9; }
-
-        .type-selector { display: flex; gap: 10px; }
-        .type-btn { flex: 1; padding: 10px; font-size: 0.85rem; font-weight: bold; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; background: white; cursor: pointer; }
-        .type-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
-
         button.search-btn { width: 100%; padding: 14px; background: var(--primary-color); color: white; border: none; font-size: 1rem; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; }
-        
         .route-tabs { display: flex; gap: 5px; margin-top: 25px; display: none; }
         .route-tab { padding: 8px 16px; background: #e2e8f0; border-radius: 8px 8px 0 0; font-size: 0.85rem; font-weight: bold; cursor: pointer; color: #475569; }
         .route-tab.active { background: white; color: black; border: 1px solid #e2e8f0; border-bottom: none; position: relative; z-index: 2; margin-bottom: -1px; }
-
         #result-container { background: #ffffff; border-radius: 0 12px 12px 12px; border: 1px solid #e2e8f0; padding: 20px; display: none; margin-top: -1px; }
         .line-header-box { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 6px; color: white; font-size: 0.85rem; font-weight: bold; margin: 15px 0 5px 0; }
-        
+        .line-header-box select { padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; background: white; color: #333; }
         .station-row { padding: 8px 0; font-size: 0.95rem; display: flex; align-items: center; position: relative; margin-left: 25px; }
         .station-row::before { content: ""; position: absolute; left: -15px; top: 0; bottom: 0; width: 4px; background: var(--line-color, #ccc); z-index: 1; }
         .station-row.is-start::before { top: 50%; }
         .station-row.is-end::before { bottom: 50%; }
-
         .badge { display: inline-block; padding: 3px 4px; font-size: 0.65rem; font-weight: 700; color: white; border-radius: 4px; margin-right: 12px; font-family: monospace; min-width: 48px; text-align: center; z-index: 2; }
         .badge.dark-text { color: #333; }
         .station-name { font-weight: 600; }
-        
         .accordion-btn { margin-left: 25px; padding: 6px 12px; font-size: 0.75rem; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; color: #475569; display: flex; align-items: center; gap: 5px; width: fit-content; position: relative; margin: 4px 0; }
         .accordion-btn::before { content: ""; position: absolute; left: -15px; top: -6px; bottom: -6px; width: 4px; background: var(--line-color, #ccc); }
         .accordion-content { display: none; }
-        
         .transfer-row { display: flex; align-items: center; margin: 12px 0 12px 5px; padding: 6px 12px; background: #fff5eb; border: 1px dashed var(--accent-color); border-radius: 6px; font-size: 0.8rem; color: #d35400; font-weight: bold; }
         .footer-credit { text-align: center; font-size: 0.7rem; color: #aaa; margin-top: 20px; }
     </style>
@@ -66,15 +49,7 @@
     <div class="app-header">
         <div class="company-name">霞野地方交通広域ネットワークポータル</div>
         <h1>霞野エリア 総合乗換案内</h1>
-        
-        <div class="line-links">
-            <a href="line_kosoku.html" class="line-link-btn" style="background:#50C878;">📄 霞野高速鉄道</a>
-            <a href="line_shintoshi.html" class="line-link-btn" style="background:#4a86e8;">📄 霞野新都市交通</a>
-            <a href="line_aozora.html" class="line-link-btn" style="background:#ADD8E6; color:#333;">📄 霞日あおぞら鉄道</a>
-            <a href="line_kaihatsu.html" class="line-link-btn" style="background:#4c5866;">📄 陸原開発鉄道</a>
-        </div>
-    </div>
-    
+
     <div class="form-section" id="start-section">
         <div class="section-title">🛫 出発駅</div>
         <div class="input-container">
@@ -100,344 +75,15 @@
             </div>
         </div>
     </div>
-
-    <div class="form-section">
-        <div class="section-title">🚊 希望運行種別</div>
-        <div class="type-selector">
-            <div class="type-btn active" data-type="local" onclick="selectType('local')">普通</div>
-            <div class="type-btn" data-type="rapid" onclick="selectType('rapid')">快速</div>
-            <div class="type-btn" data-type="express" onclick="selectType('express')">特急</div>
-        </div>
-    </div>
     
     <button class="search-btn" onclick="executeMultiSearch()">最 適 経 路 検 索</button>
     <div class="route-tabs" id="routeTabs"></div>
     <div id="result-container"></div>
 </div>
 
-<div class="footer-credit">© 2026 霞野地方各交通事業者連合</div>
+<div class="footer-credit">©tomidare1234</div>
 
-<script>
-// データ構造は共通（探索用に保持）
-const companyData = {
-    "霞野高速鉄道": {
-        lineName: "霞野陸原線", color: "#50C878", textDark: false,
-        typeColors: { "local": "#4d4d4d", "rapid": "#60EE3C", "express": "#F54738" },
-        typeTextColor: { "local": "white", "rapid": "#111", "express": "white" },
-        stations: [
-            { id: "KA01", name: "霞野", types: ["local", "rapid", "express"] },
-            { id: "KA02", name: "北二丁目", types: ["local", "rapid"] },
-            { id: "KA03", name: "西高前", types: ["local"] },
-            { id: "KA04", name: "泉園", types: ["local"] },
-            { id: "KA05", name: "新霞野", types: ["local", "rapid", "express"] },
-            { id: "KA06", name: "向原", types: ["local"] },
-            { id: "KA07", name: "旭町", types: ["local", "rapid"] },
-            { id: "KA08", name: "桜ヶ丘公園", types: ["local"] },
-            { id: "KA09", name: "豊丘", types: ["local"] },
-            { id: "KA10", name: "北陸原", types: ["local", "rapid", "express"] },
-            { id: "KA11", name: "陸原工業団地", types: ["local", "rapid"] },
-            { id: "KA12", name: "陸原流通センター", types: ["local", "rapid"] },
-            { id: "KA13", name: "平沼", types: ["local"] },
-            { id: "KA14", name: "千石町", types: ["local", "rapid", "express"] },
-            { id: "KA15", name: "運動公園", types: ["local", "rapid"] },
-            { id: "KA16", name: "博物館前", types: ["local", "rapid"] },
-            { id: "KA17", name: "陸原市役所前", types: ["local", "rapid", "express"] },
-            { id: "KA18", name: "中央大通", types: ["local", "rapid", "express"] },
-            { id: "KA19", name: "錦町", types: ["local", "rapid"] },
-            { id: "KA20", name: "陸原", types: ["local", "rapid", "express"] }
-        ]
-    },
-    "霞野新都市交通": {
-        lineName: "霞野空港線", color: "#4a86e8", textDark: false,
-        typeColors: { "local": "#7f8c8d", "rapid": "#2980b9", "express": "#1f3a60" },
-        typeTextColor: { "local": "white", "rapid": "white", "express": "white" },
-        stations: [
-            { id: "KS01", name: "霞野", types: ["local", "rapid", "express"] },
-            { id: "KS02", name: "西霞野", types: ["local", "rapid", "express"] },
-            { id: "KS03", name: "学園町", types: ["local"] },
-            { id: "KS04", name: "けやき台", types: ["local"] },
-            { id: "KS05", name: "弍原神社", types: ["local", "rapid", "express"] },
-            { id: "KS06", name: "原ヶ谷", types: ["local"] },
-            { id: "KS07", name: "新豊田", types: ["local"] },
-            { id: "KS08", name: "下川原", types: ["local"] },
-            { id: "KS09", name: "向陽台", types: ["local"] },
-            { id: "KS10", name: "霞野空港", types: ["local", "rapid", "express"] }
-        ]
-    },
-    "霞日あおぞら鉄道": {
-        lineName: "霞日あおぞら鉄道線", color: "#ADD8E6", textDark: true,
-        typeColors: { "local": "#7bb3c4", "rapid": "#4682b4", "express": "#1e4d75" },
-        typeTextColor: { "local": "white", "rapid": "white", "express": "white" },
-        stations: [
-            { id: "KB01", name: "霞野", types: ["local", "rapid", "express"] },
-            { id: "KB02", name: "霞野ドーム", types: ["local", "rapid", "express"] },
-            { id: "KB03", name: "霞野一丁目", types: ["local", "rapid", "express"] },
-            { id: "KB04", name: "薬園", types: ["local", "rapid", "express"] },
-            { id: "KB05", name: "天森", types: ["local", "rapid", "express"] },
-            { id: "KB06", name: "新町", types: ["local", "rapid", "express"] },
-            { id: "KB07", name: "霞野医療センター", types: ["local", "rapid", "express"] },
-            { id: "KB08", name: "茶畑", types: ["local", "rapid", "express"] },
-            { id: "KB09", name: "恵", types: ["local", "rapid", "express"] },
-            { id: "KB10", name: "霞台", types: ["local", "rapid", "express"] },
-            { id: "KB11", name: "市場前", types: ["local", "rapid", "express"] },
-            { id: "KB12", name: "東霞ヶ嶺", types: ["local", "rapid", "express"] },
-            { id: "KB13", name: "里下", types: ["local", "rapid", "express"] },
-            { id: "KB14", name: "千歳", types: ["local", "rapid", "express"] },
-            { id: "KB15", name: "山谷", types: ["local", "rapid", "express"] },
-            { id: "KB16", name: "海見", types: ["local", "rapid", "express"] },
-            { id: "KB17", name: "苦道", types: ["local", "rapid", "express"] },
-            { id: "KB18", name: "楽道", types: ["local", "rapid", "express"] },
-            { id: "KB19", name: "龍虫", types: ["local", "rapid", "express"] },
-            { id: "KB20", name: "山野道", types: ["local", "rapid", "express"] },
-            { id: "KB21", name: "的茂", types: ["local", "rapid", "express"] },
-            { id: "KB22", name: "大井山", types: ["local", "rapid", "express"] },
-            { id: "KB23", name: "今澤", types: ["local", "rapid", "express"] },
-            { id: "KB24", name: "相厳", types: ["local", "rapid", "express"] },
-            { id: "KB25", name: "幣村", types: ["local", "rapid", "express"] },
-            { id: "KB26", name: "内藁", types: ["local", "rapid", "express"] },
-            { id: "KB27", name: "弥下", types: ["local", "rapid", "express"] },
-            { id: "KB28", name: "浅川", types: ["local", "rapid", "express"] },
-            { id: "KB29", name: "大隈", types: ["local", "rapid", "express"] },
-            { id: "KB30", name: "竹下", types: ["local", "rapid", "express"] },
-            { id: "KB31", name: "石上", types: ["local", "rapid", "express"] },
-            { id: "KB32", name: "片丘津宮", types: ["local", "rapid", "express"] },
-            { id: "KB33", name: "嫋竹", types: ["local", "rapid", "express"] },
-            { id: "KB34", name: "若座", types: ["local", "rapid", "express"] },
-            { id: "KB35", name: "町野", types: ["local", "rapid", "express"] },
-            { id: "KB36", name: "稿", types: ["local", "rapid", "express"] },
-            { id: "KB37", name: "あおぞら棚姫", types: ["local", "rapid", "express"] },
-            { id: "KB38", name: "木岡北", types: ["local", "rapid", "express"] },
-            { id: "KB39", name: "諸岡", types: ["local", "rapid", "express"] },
-            { id: "KB40", name: "上縄", types: ["local", "rapid", "express"] },
-            { id: "KB41", name: "日原", types: ["local", "rapid", "express"] }
-        ]
-    },
-    "陸原開発鉄道": {
-        lineName: "陸原開発鉄道陸原線", color: "#4c5866", textDark: false,
-        typeColors: { "local": "#4c5866", "rapid": "#e67e22", "express": "#9b59b6" },
-        typeTextColor: { "local": "white", "rapid": "white", "express": "white" },
-        stations: [
-            { id: "KG01", name: "陸原工業団地", types: ["local", "rapid", "express"] },
-            { id: "KG02", name: "陸原テックロード", types: ["local", "rapid", "express"] }
-        ]
-    }
-};
-
-const hubConnections = [
-    ["KA01", "KS01"], ["KA01", "KB01"], ["KS01", "KB01"],
-    ["KA11", "KG01"]
-];
-
-let stationFlattenList = [];
-for (let comp in companyData) {
-    companyData[comp].stations.forEach(st => {
-        stationFlattenList.push({
-            id: st.id, name: st.name, color: companyData[comp].color, textDark: companyData[comp].textDark, 
-            line: companyData[comp].lineName, types: st.types, comp: comp
-        });
-    });
-}
-
-let selectedTrainType = 'local';
-let globalSearchResult = [];
-
-window.onload = function() {
-    ['start', 'goal'].forEach(pos => {
-        const compSel = document.querySelector(`#${pos}-section .comp-select`);
-        for(let comp in companyData) compSel.add(new Option(comp, comp));
-    });
-};
-
-function selectType(type) {
-    selectedTrainType = type;
-    document.querySelectorAll('.type-btn').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-type') === type));
-}
-
-function updateLineSelect(compElement, pos) {
-    const section = document.getElementById(`${pos}-section`);
-    const lineSel = section.querySelector('.line-select');
-    const stSel = section.querySelector('.st-select');
-    lineSel.innerHTML = '<option value="">路線</option>';
-    stSel.innerHTML = '<option value="">駅名</option>';
-    if(compElement.value) {
-        lineSel.add(new Option(companyData[compElement.value].lineName, companyData[compElement.value].lineName));
-        lineSel.selectedIndex = 1;
-        updateStationSelect(lineSel, pos);
-    }
-}
-
-function updateStationSelect(lineElement, pos) {
-    const section = document.getElementById(`${pos}-section`);
-    const compVal = section.querySelector('.comp-select').value;
-    const stSel = section.querySelector('.st-select');
-    stSel.innerHTML = '<option value="">駅名</option>';
-    if(lineElement.value) {
-        companyData[compVal].stations.forEach(st => stSel.add(new Option(st.name, st.name)));
-    }
-}
-
-function syncSelectToText(element, pos) {
-    if(element.value) document.getElementById(`text${pos==='start'?'Start':'Goal'}St`).value = element.value;
-}
-
-function showSuggest(input, pos) {
-    const text = input.value.trim();
-    const box = document.getElementById(`suggest${pos==='start'?'Start':'Goal'}`);
-    box.innerHTML = '';
-    if(!text) { box.style.display = 'none'; return; }
-    const matched = stationFlattenList.filter(s => s.name.includes(text));
-    if(matched.length > 0) {
-        const uniqueNames = [...new Set(matched.map(s => s.name))];
-        uniqueNames.forEach(name => {
-            let itemSt = matched.find(s => s.name === name);
-            let div = document.createElement('div');
-            div.className = 'suggest-item';
-            div.innerHTML = `<span>${name}</span><span class="line-badge">${itemSt.line}</span>`;
-            div.onclick = function() {
-                input.value = name;
-                box.style.display = 'none';
-                const section = document.getElementById(`${pos}-section`);
-                section.querySelector('.comp-select').value = itemSt.comp;
-                updateLineSelect(section.querySelector('.comp-select'), pos);
-                section.querySelector('.st-select').value = name;
-            };
-            box.appendChild(div);
-        });
-        box.style.display = 'block';
-    } else { box.style.display = 'none'; }
-}
-
-function buildNetworkGraph(selectedType) {
-    const graph = {};
-    stationFlattenList.forEach(s => graph[s.id] = []);
-    for (let comp in companyData) {
-        let activeStations = companyData[comp].stations.filter(st => st.types.includes(selectedType));
-        for (let i = 0; i < activeStations.length - 1; i++) {
-            let a = activeStations[i].id; let b = activeStations[i+1].id;
-            graph[a].push({ id: b, isTrain: true });
-            graph[b].push({ id: a, isTrain: true });
-        }
-    }
-    hubConnections.forEach(([a, b]) => {
-        if (graph[a] && graph[b]) {
-            graph[a].push({ id: b, isTrain: false });
-            graph[b].push({ id: a, isTrain: false });
-        }
-    });
-    return graph;
-}
-
-function executeMultiSearch() {
-    const startName = document.getElementById('textStartSt').value.trim();
-    const goalName = document.getElementById('textGoalSt').value.trim();
-    const resContainer = document.getElementById('result-container');
-    const tabsContainer = document.getElementById('routeTabs');
-    
-    if(!startName || !goalName || startName === goalName) { alert("正しい駅を選択してください。"); return; }
-
-    const graph = buildNetworkGraph(selectedTrainType);
-    let startIds = stationFlattenList.filter(s => s.name === startName && s.types.includes(selectedTrainType)).map(s => s.id);
-    if(startIds.length === 0) { alert("指定種別が停車しません。"); return; }
-
-    const startCompSelect = document.querySelector('#start-section .comp-select').value;
-    if(startCompSelect) {
-        let preferred = stationFlattenList.find(s => s.name === startName && s.comp === startCompSelect && s.types.includes(selectedTrainType));
-        if(preferred) startIds = [preferred.id, ...startIds.filter(id => id !== preferred.id)];
-    }
-
-    let allPaths = [];
-    let queue = [];
-    startIds.forEach(id => queue.push({ path: [id], lastActionWasTransfer: false }));
-
-    while(queue.length > 0 && allPaths.length < 3) {
-        let node = queue.shift();
-        let currentId = node.path[node.path.length - 1];
-        let currentSt = stationFlattenList.find(s => s.id === currentId);
-
-        if(currentSt.name === goalName) {
-            if(!allPaths.some(p => p.join('-') === node.path.join('-'))) allPaths.push(node.path);
-            continue;
-        }
-
-        let edges = graph[currentId] || [];
-        for(let edge of edges) {
-            if(!node.path.includes(edge.id)) {
-                // 【バグ修正】同じ駅名での連続乗り換え（徒歩移動ループ）を完全ブロック
-                if(!edge.isTrain && node.lastActionWasTransfer) continue;
-                if(node.path.length < 50) {
-                    queue.push({ path: [...node.path, edge.id], lastActionWasTransfer: !edge.isTrain });
-                }
-            }
-        }
-    }
-
-    globalSearchResult = allPaths;
-    tabsContainer.innerHTML = '';
-    if(allPaths.length === 0) {
-        resContainer.innerHTML = "❌ ルートが見つかりません。"; resContainer.style.display = 'block'; tabsContainer.style.display = 'none'; return;
-    }
-
-    allPaths.forEach((path, idx) => {
-        let tab = document.createElement('div');
-        tab.className = `route-tab ${idx===0?'active':''}`;
-        tab.textContent = `経路 ${idx + 1}`;
-        tab.onclick = () => renderActiveRoute(idx);
-        tabsContainer.appendChild(tab);
-    });
-    tabsContainer.style.display = 'flex';
-    renderActiveRoute(0);
-}
-
-function renderActiveRoute(routeIdx) {
-    document.querySelectorAll('.route-tab').forEach((t, i) => t.classList.toggle('active', i === routeIdx));
-    const path = globalSearchResult[routeIdx];
-    const resContainer = document.getElementById('result-container');
-    
-    let html = `<div class="result-title">🗺️ 検索結果（全 ${path.length} 駅接続）</div>`;
-    let currentLine = ""; let intermediateStack = [];
-    const typeNames = { "local": "普通", "rapid": "快速", "express": "特急" };
-
-    function flushStack(lineColor) {
-        if (intermediateStack.length === 0) return "";
-        let rand = "acc_" + Math.random().toString(36).substr(2, 9);
-        let s = `<div class="accordion-btn" onclick="toggleAcc('${rand}')" style="--line-color: ${lineColor}">👁️ 途中 ${intermediateStack.length} 駅を省略 (展開)</div><div class="accordion-content" id="${rand}">`;
-        intermediateStack.forEach(st => {
-            s += `<div class="station-row" style="--line-color: ${lineColor}"><span class="${st.c}" style="background:${st.bg}">${st.id}</span><span class="station-name" style="color:#777;">${st.n}</span></div>`;
-        });
-        s += `</div>`; intermediateStack = []; return s;
-    }
-
-    path.forEach((id, idx) => {
-        const cur = stationFlattenList.find(s => s.id === id);
-        const isS = (idx === 0); const isE = (idx === path.length - 1);
-        const isT = (!isS && !isE && path[idx+1] && stationFlattenList.find(s => s.id === path[idx+1]).line !== cur.line);
-        const isP = (!isS && !isE && path[idx-1] && stationFlattenList.find(s => s.id === path[idx-1]).line !== cur.line);
-
-        if (cur.line !== currentLine) {
-            if (idx > 0) {
-                html += flushStack(stationFlattenList.find(s => s.id === path[idx-1]).color);
-                html += `</div><div class="transfer-row"><span>🔄【改札内連絡】${cur.name}駅 のりかえ</span></div>`;
-            }
-            currentLine = cur.line;
-            const tc = companyData[cur.comp].typeColors[selectedTrainType];
-            const tt = companyData[cur.comp].typeTextColor[selectedTrainType];
-            html += `<div class="route-block"><div class="line-header-box" style="background:${tc}; color:${tt}; border-left: 8px solid ${cur.color};"><span>${cur.line} ｜ ${typeNames[selectedTrainType]}</span><span>${cur.comp}</span></div>`;
-        }
-
-        const bCls = cur.textDark ? "badge dark-text" : "badge";
-        if (isS || isE || isT || isP) {
-            html += flushStack(cur.color);
-            html += `<div class="station-row ${isS?'is-start':''} ${isE?'is-end':''}" style="--line-color: ${cur.color}"><span class="${bCls}" style="background:${cur.color}">${id}</span><span class="station-name">${cur.name}</span></div>`;
-        } else {
-            intermediateStack.push({ id: id, n: cur.name, c: bCls, bg: cur.color });
-        }
-    });
-    html += flushStack(stationFlattenList.find(s => s.id === path[path.length-1]).color) + `</div>`;
-    resContainer.innerHTML = html; resContainer.style.display = 'block';
-}
-
-function toggleAcc(id) { const el = document.getElementById(id); el.style.display = (el.style.display === 'block') ? 'none' : 'block'; }
-document.addEventListener('click', e => { if(!e.target.closest('.input-container')) document.querySelectorAll('.suggest-box').forEach(b => b.style.display = 'none'); });
-</script>
+<script src="network_data.js"></script>
+<script src="route_engine.js"></script>
 </body>
 </html>
