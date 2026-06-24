@@ -15,22 +15,20 @@
         
         .input-row { margin-bottom: 8px; }
         .input-row input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccd6dd; border-radius: 6px; font-size: 0.95rem; }
-        .input-row input:focus { border-color: #1da1f2; outline: none; }
         
-        .select-row { display: flex; gap: 6px; }
-        .select-row select { flex: 1; padding: 8px; box-sizing: border-box; border: 1px solid #ccd6dd; border-radius: 6px; font-size: 0.85rem; background: white; }
+        /* 【修正】長い名前の企業でも枠をはみ出さないように設定 */
+        .select-row { display: flex; gap: 6px; width: 100%; box-sizing: border-box; }
+        .select-row select { flex: 1; min-width: 0; padding: 8px 4px; box-sizing: border-box; border: 1px solid #ccd6dd; border-radius: 6px; font-size: 0.85rem; background: white; text-overflow: ellipsis; }
 
         .search-btn { width: 100%; padding: 12px; background: var(--primary-color); color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
         .search-btn:hover { background: #1a252f; }
         
-        /* 複数経路タブ */
         .tabs { display: flex; margin-top: 25px; gap: 5px; display: none; }
         .tab { padding: 10px 20px; background: #e1e8ed; font-size: 0.9rem; font-weight: bold; cursor: pointer; border-radius: 6px 6px 0 0; color: #657786; border: 1px solid #e1e8ed; border-bottom: none; }
-        .tab.active { background: white; border-color: #ccd6dd; color: var(--primary-color); position: relative; z-index: 2; height: auto; margin-bottom: -1px; padding-bottom: 11px; }
+        .tab.active { background: white; border-color: #ccd6dd; color: var(--primary-color); position: relative; z-index: 2; margin-bottom: -1px; padding-bottom: 11px; }
         
         #result { background: white; border: 1px solid #ccd6dd; border-radius: 0 8px 8px 8px; padding: 20px; display: none; margin-top: -1px; }
         
-        /* ルート・縦棒路線図表示UI */
         .line-block { border: 1px solid #ccd6dd; margin-bottom: 15px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .line-header { padding: 10px 14px; color: white; font-weight: bold; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
         .line-header select { padding: 4px 8px; font-size: 0.8rem; font-weight: bold; cursor: pointer; border-radius: 4px; border: none; }
@@ -38,22 +36,19 @@
         .station-container { position: relative; background: white; }
         .st-row { padding: 10px 15px; font-size: 0.95rem; display: flex; align-items: center; position: relative; }
         
-        /* 路線図の縦棒 */
+        /* 通過駅であっても共通で縦線を必ず引く設定 */
         .st-row::before { content: ""; position: absolute; left: 33px; top: 0; bottom: 0; width: 6px; background: var(--line-color, #ccc); z-index: 1; }
         .st-row:first-child::before { top: 50%; }
         .st-row:last-child::before { bottom: 50%; }
         
-        /* ナンバリング用サークルバッジ */
         .st-badge { position: relative; z-index: 2; width: 42px; height: 22px; border-radius: 12px; background: var(--line-color, #ccc); color: white; font-size: 0.75rem; font-weight: bold; display: flex; align-items: center; justify-content: center; margin-right: 15px; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .st-name { font-weight: 500; flex: 1; }
         
-        /* 通過駅のスタイル */
+        /* 通過駅の文字・バッジ色（縦線は残す） */
         .st-row.pass-station { color: #aab8c2; }
-        .st-row.pass-station::before { background: #e1e8ed !important; }
         .st-row.pass-station .st-badge { background: #e1e8ed !important; color: #aab8c2; box-shadow: none; }
         .pass-label { font-size: 0.75rem; color: #aab8c2; margin-left: 8px; background: #f4f6f9; padding: 2px 6px; border-radius: 4px; }
         
-        /* アコーディオン */
         .acc-btn { position: relative; z-index: 3; padding: 8px; background: #f8f9fa; font-size: 0.8rem; color: #007bff; cursor: pointer; text-align: center; border-top: 1px solid #edf0f2; border-bottom: 1px solid #edf0f2; font-weight: bold; }
         .acc-btn:hover { background: #f1f3f5; }
         .acc-content { display: none; }
