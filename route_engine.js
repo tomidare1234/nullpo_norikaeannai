@@ -129,3 +129,72 @@ function renderTabs() {
         };
         tabs.appendChild(tab);
     });
+    tabs.style.display = "flex"; activeRouteIdx = 0; renderActiveRoute();
+}
+
+function onLineTypeChange(lineName, newType) {
+    activeLineTypes[lineName] = newType;
+    renderActiveRoute();
+}
+
+function renderActiveRoute() {
+    let container = document.getElementById("result");
+    let path = globalPaths[activeRouteIdx];
+    let html = ""; let currLine = ""; let intermediateStack = []; let stopCount = 0;
+
+    function flushStack() {
+        if (intermediateStack.length === 0) return "";
+        let randId = "acc_" + Math.random().toString(36).substr(2, 9);
+        let s = `<div class="acc-btn" onclick="document.getElementById('${randId}').style.display=(document.getElementById('${randId}').style.display==='block')?'none':'block'">▼ 途中 ${stopCount} 駅を表示/非表示</div><div class="acc-content" id="${randId}">`;
+        intermediateStack.forEach(row => s += row);
+        s += `</div>`;
+        intermediateStack = []; stopCount = 0; return s;
+    }
+
+    path.forEach((id, idx) => {
+        let st = stations.find(s => s.id === id);
+        let compInfo = companyData[st.comp];
+        let currentType = activeLineTypes[st.line];
+
+        if (st.line !== currLine) {
+            html += flushStack();
+            if (idx > 0) html += `<div class="transfer-row">🔄 乗り換え</div>`;
+            currLine = st.line;
+            let bg = compInfo.typeColors[currentType] || compInfo.color;
+            let textCol = compInfo.typeTextColor ? (compInfo.typeTextColor[currentType] || "white") : (st.dark ? "black" : "white");
+            
+            let selectHtml = "";
+            let typeKeys = Object.keys(compInfo.typeColors);
+            if (typeKeys.length > 1) {
+                const rawNames = { "local": "普通", "rapid": "快速", "express": "特急" };
+                selectHtml = `<select onchange="onLineTypeChange('${st.line}', this.value)">`;
+                typeKeys.forEach(k => {
+                    let customName = (st.comp === "霞野新都市交通" && k === "local") ? "各駅停車" : 
+                                     (st.comp === "霞野新都市交通" && k === "rapid") ? "空港快速" : rawNames[k];
+                    selectHtml += `<option value="${k}" ${k === currentType ? 'selected' : ''}>${customName}</option>`;
+                });
+                selectHtml += `</select>`;
+            }
+            html += `<div class="line-block"><div class="line-header" style="background:${bg};color:${textCol};"><span>${st.line}</span>${selectHtml}</div><div class="station-container" style="--line-color:${compInfo.color}">`;
+        }
+
+        let isStop = st.types.includes(currentType);
+        let rowClass = isStop ? "st-row" : "st-row pass-station";
+        let passLabel = isStop ? "" : "<span class='pass-label'>通過</span>";
+        let rowHtml = `<div class="${rowClass}"><div class="st-badge">${id}</div><div class="st-name">${st.name}</div>${passLabel}</div>`;
+
+        let isBoundary = (idx === 0 || idx === path.length - 1 || 
+                         (path[idx+1] && stations.find(s => s.id === path[idx+1]).line !== st.line) || 
+                         (path[idx-1] && stations.find(s => s.id === path[idx-1]).line !== st.line));
+
+        if (isBoundary) {
+            html += flushStack(); html += rowHtml;
+        } else {
+            if (isStop) stopCount++;
+            intermediateStack.push(rowHtml);
+        }
+    });
+
+    html += flushStack() + "</div></div>";
+    container.innerHTML = html; container.style.display = "block";
+}
