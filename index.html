@@ -6,19 +6,30 @@
     <style>
         body { font-family: sans-serif; max-width: 500px; margin: 20px auto; padding: 0 10px; background: #f5f5f5; color: #333; }
         .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .input-group { margin-bottom: 15px; }
+        .input-group { margin-bottom: 15px; position: relative; }
         .input-group label { display: block; font-weight: bold; font-size: 0.85rem; margin-bottom: 4px; }
         .input-group input { width: 100%; padding: 8px; box-sizing: border-box; }
-        .search-btn { width: 100%; padding: 10px; background: #2c3e50; color: white; border: none; font-weight: bold; cursor: pointer; }
-        #result { margin-top: 20px; display: none; }
         
+        /* 予測サジェストボックス */
+        .suggest-box { position: absolute; background: white; border: 1px solid #ccc; width: 100%; max-height: 150px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .suggest-item { padding: 8px; cursor: pointer; font-size: 0.9rem; }
+        .suggest-item:hover { background: #eee; }
+        
+        .search-btn { width: 100%; padding: 10px; background: #2c3e50; color: white; border: none; font-weight: bold; cursor: pointer; }
+        
+        /* 複数経路用タブ */
+        .tabs { display: flex; margin-top: 20px; gap: 4px; display: none; }
+        .tab { padding: 8px 16px; background: #ddd; font-size: 0.85rem; font-weight: bold; cursor: pointer; border-radius: 4px 4px 0 0; }
+        .tab.active { background: white; border: 1px solid #ccc; border-bottom: none; position: relative; z-index: 2; }
+        
+        #result { background: white; border: 1px solid #ccc; border-radius: 0 4px 4px 4px; padding: 15px; display: none; margin-top: -1px; }
         .line-block { border: 1px solid #ccc; margin-bottom: 10px; border-radius: 4px; overflow: hidden; }
         .line-header { padding: 8px; color: white; font-weight: bold; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; }
         .line-header select { padding: 2px 4px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
         
         .st-row { padding: 6px 12px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
         .st-row:last-child { border-bottom: none; }
-        .st-row.pass-station { color: #bbb; background: #fafafa; font-size: 0.85rem; } /* 通過駅は灰色 */
+        .st-row.pass-station { color: #bbb; background: #fafafa; font-size: 0.85rem; }
         
         .acc-btn { padding: 6px 12px; background: #f0f0f0; font-size: 0.8rem; color: #666; cursor: pointer; text-align: center; border-bottom: 1px solid #eee; }
         .acc-content { display: none; }
@@ -32,15 +43,19 @@
     
     <div class="input-group">
         <label>🛫 出発駅</label>
-        <input type="text" id="startSt" placeholder="例: 霞野">
+        <input type="text" id="startSt" placeholder="例: 霞野" oninput="showSuggest(this, 'start')">
+        <div class="suggest-box" id="suggest-start"></div>
     </div>
     
     <div class="input-group">
         <label>🛬 目的駅</label>
-        <input type="text" id="goalSt" placeholder="例: 陸原テックロード">
+        <input type="text" id="goalSt" placeholder="例: 陸原テックロード" oninput="showSuggest(this, 'goal')">
+        <div class="suggest-box" id="suggest-goal"></div>
     </div>
     
     <button class="search-btn" onclick="searchRoute()">経路検索</button>
+    
+    <div class="tabs" id="tabs"></div>
     <div id="result"></div>
 </div>
 
