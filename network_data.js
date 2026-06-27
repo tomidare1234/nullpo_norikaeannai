@@ -61,7 +61,7 @@ const companyData = {
             { id: "KB17", name: "苦道", types: ["local"] }, { id: "KB18", name: "楽道", types: ["local"] },
             { id: "KB19", name: "龍虫", types: ["local"] }, { id: "KB20", name: "山野道", types: ["local"] },
             { id: "KB21", name: "的茂", types: ["local"] }, { id: "KB22", name: "大井山", types: ["local"] },
-            { id: "KB23", name: "今澤", types: ["local"] }, { id: "相厳", name: "相厳", types: ["local"] }, // HTML参照修正
+            { id: "KB23", name: "今澤", types: ["local"] }, { id: "KB24", name: "相厳", types: ["local"] },
             { id: "KB25", name: "幣村", types: ["local"] }, { id: "KB26", name: "内藁", types: ["local"] },
             { id: "KB27", name: "弥下", types: ["local"] }, { id: "KB28", name: "浅川", types: ["local"] },
             { id: "KB29", name: "大隈", types: ["local"] }, { id: "KB30", name: "竹下", types: ["local"] },
@@ -82,8 +82,8 @@ const companyData = {
             { id: "KG02", name: "陸原テックロード", types: ["local"] }
         ]
     },
-    "日原鉄道": {
-        lineName: "本線", color: "#0066cc", textDark: false,
+    "日原鉄道本線": {
+        lineName: "日原鉄道本線", color: "#0066cc", textDark: false,
         typeColors: { 
             "local": "#0066cc",   // 普通（本線路線色）
             "rapid": "#6906ff",   // 快速
@@ -145,7 +145,7 @@ const companyData = {
             { id: "HH52", name: "霞野", types: ["local", "rapid", "express"] }
         ]
     },
-    {
+    "日原鉄道得元線": {
         lineName: "日原鉄道得元線", color: "#3bfad1", textDark: true,
         typeColors: { 
             "local": "#3bfad1",   // 普通（路線色）
@@ -206,7 +206,7 @@ const companyData = {
             { id: "HE50", name: "橋本中央", types: ["local", "rapid", "express"] }
         ]
     },
-{
+    "日原空港線": {
         lineName: "日原空港線", color: "#fc00ea", textDark: false,
         typeColors: { 
             "local": "#fc00ea",           // 普通（路線色）
@@ -223,7 +223,7 @@ const companyData = {
             { id: "HA06", name: "日原空港", types: ["local", "airport_rapid", "express"] }
         ]
     },
-    {
+    "日原鉄道元野港線": {
         lineName: "日原鉄道元野港線", color: "#2b0000", textDark: false,
         typeColors: { "local": "#2b0000" },
         typeTextColor: { "local": "white" },
@@ -233,7 +233,7 @@ const companyData = {
             { id: "HM03", name: "日原元野港", types: ["local"] }
         ]
     },
-    {
+    "日原鉄道生竹線": {
         lineName: "日原鉄道生竹線", color: "#8a0106", textDark: false,
         typeColors: { "local": "#8a0106", "express": "#ff0000" },
         typeTextColor: { "local": "white", "express": "white" },
