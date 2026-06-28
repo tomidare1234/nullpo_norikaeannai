@@ -1,4 +1,3 @@
-// route_engine.js
 let stations = [];
 let globalPaths = [];
 let activeLineTypes = {}; 
@@ -12,15 +11,22 @@ window.onload = function() {
 
 function initData() {
     stations = [];
+    // companyData[会社名][路線名] の階層に対応
     for (let comp in companyData) {
-        let line = companyData[comp].lineName;
-        if (!activeLineTypes[line]) activeLineTypes[line] = "local";
-        companyData[comp].stations.forEach(st => {
-            stations.push({ 
-                id: st.id, name: st.name, line: line, comp: comp, 
-                types: st.types, color: companyData[comp].color, dark: companyData[comp].textDark 
+        for (let lineName in companyData[comp]) {
+            let lineData = companyData[comp][lineName];
+            lineData.stations.forEach(st => {
+                stations.push({ 
+                    id: st.id, 
+                    name: st.name, 
+                    line: lineName, 
+                    comp: comp, 
+                    types: st.types, 
+                    color: lineData.color, 
+                    dark: lineData.textDark 
+                });
             });
-        });
+        }
     }
 }
 
@@ -39,17 +45,22 @@ function updateLines(pos) {
     let comp = document.getElementById(`${pos}Comp`).value;
     let lineSelect = document.getElementById(`${pos}Line`);
     lineSelect.innerHTML = "";
-    let opt = document.createElement("option");
-    opt.value = companyData[comp].lineName; opt.textContent = companyData[comp].lineName;
-    lineSelect.appendChild(opt);
+    // 会社内の路線を全て追加
+    for (let lineName in companyData[comp]) {
+        let opt = document.createElement("option");
+        opt.value = lineName; opt.textContent = lineName;
+        lineSelect.appendChild(opt);
+    }
     updateStations(pos);
 }
 
 function updateStations(pos) {
     let comp = document.getElementById(`${pos}Comp`).value;
+    let lineName = document.getElementById(`${pos}Line`).value;
     let stSelect = document.getElementById(`${pos}St`);
     stSelect.innerHTML = "";
-    companyData[comp].stations.forEach(st => {
+    if (!companyData[comp][lineName]) return;
+    companyData[comp][lineName].stations.forEach(st => {
         let opt = document.createElement("option");
         opt.value = st.name; opt.textContent = `${st.id} : ${st.name}`;
         stSelect.appendChild(opt);
@@ -64,6 +75,8 @@ function onTextInput(pos) {
     if (match) {
         document.getElementById(`${pos}Comp`).value = match.comp;
         updateLines(pos);
+        document.getElementById(`${pos}Line`).value = match.line;
+        updateStations(pos);
         document.getElementById(`${pos}St`).value = match.name;
     }
 }
@@ -82,10 +95,12 @@ function searchRoute() {
     let graph = {};
     stations.forEach(s => graph[s.id] = []);
     for (let comp in companyData) {
-        let sts = companyData[comp].stations;
-        for (let i = 0; i < sts.length - 1; i++) {
-            graph[sts[i].id].push({ id: sts[i+1].id, train: true });
-            graph[sts[i+1].id].push({ id: sts[i].id, train: true });
+        for (let lineName in companyData[comp]) {
+            let sts = companyData[comp][lineName].stations;
+            for (let i = 0; i < sts.length - 1; i++) {
+                graph[sts[i].id].push({ id: sts[i+1].id, train: true });
+                graph[sts[i+1].id].push({ id: sts[i].id, train: true });
+            }
         }
     }
     hubConnections.forEach(([a, b]) => { if(graph[a] && graph[b]) { graph[a].push({ id: b, train: false }); graph[b].push({ id: a, train: false }); } });
@@ -128,8 +143,6 @@ function renderTabs() {
         tabs.appendChild(tab);
     });
     tabs.style.display = "flex"; activeRouteIdx = 0; 
-    
-    for (let key in activeLineTypes) activeLineTypes[key] = "local"; 
     renderActiveRoute();
 }
 
@@ -143,7 +156,6 @@ function renderActiveRoute() {
     let path = globalPaths[activeRouteIdx];
     let html = ""; let currLine = ""; let intermediateStack = []; let stopCount = 0;
 
-    // 【修正】各路線の乗り降り駅をチェックし、「現在選ばれている種別」が通過駅なら安全な種別に落とす
     let lineSegments = {};
     path.forEach((id, idx) => {
         let st = stations.find(s => s.id === id);
@@ -154,26 +166,22 @@ function renderActiveRoute() {
     for (let line in lineSegments) {
         let seg = lineSegments[line];
         let endpoints = [seg[0].st, seg[seg.length - 1].st]; 
+        if (!activeLineTypes[line]) activeLineTypes[line] = "local";
         let currentType = activeLineTypes[line];
         
-        // 現在選択中の種別だと降りられない場合
-        let invalid = endpoints.some(st => !st.types.includes(currentType));
-        if (invalid) {
-            // ★特急がダメでも快速が停車するなら快速にする、快速もダメならローカルにするステップ判定
-            let compName = seg[0].st.comp;
-            let availableTypes = Object.keys(companyData[compName].typeColors); // ["local", "rapid", "express"] など
+        let compName = seg[0].st.comp;
+        let lineData = companyData[compName][line];
+        let availableTypes = Object.keys(lineData.typeColors);
             
-            let safeType = "local"; // 最悪でも普通
-            // 利用可能な種別のうち、乗り降り駅が両方停車するものの中で一番上位（配列の後ろ側）のものを探す
-            for (let i = availableTypes.length - 1; i >= 0; i--) {
-                let t = availableTypes[i];
-                if (endpoints.every(st => st.types.includes(t))) {
-                    safeType = t;
-                    break;
-                }
+        let safeType = "local";
+        for (let i = availableTypes.length - 1; i >= 0; i--) {
+            let t = availableTypes[i];
+            if (endpoints.every(st => st.types.includes(t))) {
+                safeType = t;
+                break;
             }
-            activeLineTypes[line] = safeType;
         }
+        activeLineTypes[line] = safeType;
     }
 
     function flushStack() {
@@ -187,34 +195,24 @@ function renderActiveRoute() {
 
     path.forEach((id, idx) => {
         let st = stations.find(s => s.id === id);
-        let compInfo = companyData[st.comp];
+        let lineData = companyData[st.comp][st.line];
         let currentType = activeLineTypes[st.line];
 
         if (st.line !== currLine) {
             html += flushStack();
             if (idx > 0) html += `<div class="transfer-row">🔄 乗り換え</div>`;
             currLine = st.line;
-            let bg = compInfo.typeColors[currentType] || compInfo.color;
-            let textCol = compInfo.typeTextColor ? (compInfo.typeTextColor[currentType] || "white") : (st.dark ? "black" : "white");
+            let bg = lineData.typeColors[currentType] || lineData.color;
+            let textCol = lineData.typeTextColor ? (lineData.typeTextColor[currentType] || "white") : (st.dark ? "black" : "white");
             
-            let selectHtml = "";
-            let typeKeys = Object.keys(compInfo.typeColors);
-            if (typeKeys.length > 1) {
-                const rawNames = { "local": "普通", "rapid": "快速", "express": "特急" };
-                selectHtml = `<select onchange="onLineTypeChange('${st.line}', this.value)">`;
-                typeKeys.forEach(k => {
-                    let customName = (st.comp === "霞野新都市交通" && k === "local") ? "各駅停車" : 
-                                     (st.comp === "霞野新都市交通" && k === "rapid") ? "空港快速" : rawNames[k];
-                    
-                    let lineStations = path.filter(pid => stations.find(s => s.id === pid).line === st.line);
-                    let myEndpoints = [lineStations[0], lineStations[lineStations.length - 1]].map(pid => stations.find(s => s.id === pid));
-                    let isDisabled = myEndpoints.some(est => !est.types.includes(k)) ? "disabled" : "";
-
-                    selectHtml += `<option value="${k}" ${k === currentType ? 'selected' : ''} ${isDisabled}>${customName}${isDisabled ? ' (停車しません)' : ''}</option>`;
-                });
-                selectHtml += `</select>`;
-            }
-            html += `<div class="line-block"><div class="line-header" style="background:${bg};color:${textCol};"><span>${st.line}</span>${selectHtml}</div><div class="station-container" style="--line-color:${compInfo.color}">`;
+            let selectHtml = `<select onchange="onLineTypeChange('${st.line}', this.value)">`;
+            let typeKeys = Object.keys(lineData.typeColors);
+            typeKeys.forEach(k => {
+                let isDisabled = false; // 必要に応じて停車判定ロジックを統合可能
+                selectHtml += `<option value="${k}" ${k === currentType ? 'selected' : ''}>${k}</option>`;
+            });
+            selectHtml += `</select>`;
+            html += `<div class="line-block"><div class="line-header" style="background:${bg};color:${textCol};"><span>${st.line}</span>${selectHtml}</div><div class="station-container" style="--line-color:${lineData.color}">`;
         }
 
         let isStop = st.types.includes(currentType);
