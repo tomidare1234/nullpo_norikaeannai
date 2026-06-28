@@ -82,122 +82,197 @@ const companyData = {
             { id: "KG02", name: "陸原テックロード", types: ["local"] }
         ]
     },
+// === network_data.js ===
+
+const companyData = {
     "日原鉄道": {
-        lines: {
-            "本線": {
-                color: "#0066cc", textDark: false,
-                typeColors: { "local": "#0066cc", "rapid": "#6906ff", "express": "#ff0000" },
-                typeTextColor: { "local": "white", "rapid": "white", "express": "white" },
-                stations: [
-                    { id: "HH01", name: "蒲生", types: ["local", "express"] }, { id: "HH02", name: "未加島", types: ["local"] },
-                    { id: "HH03", name: "野傘", types: ["local"] }, { id: "HH04", name: "貝道", types: ["local"] },
-                    { id: "HH05", name: "殿茶屋", types: ["local", "express"] }, { id: "HH06", name: "東殿茶屋", types: ["local"] },
-                    { id: "HH07", name: "植和", types: ["local"] }, { id: "HH08", name: "組野", types: ["local"] },
-                    { id: "HH09", name: "身野山", types: ["local", "express"] }, { id: "HH10", name: "栗羽", types: ["local"] },
-                    { id: "HH11", name: "忘明", types: ["local"] }, { id: "HH12", name: "元野", types: ["local", "rapid", "express"] },
-                    { id: "HH13", name: "柿沢", types: ["local"] }, { id: "HH14", name: "芝元", types: ["local"] },
-                    { id: "HH15", name: "編指", types: ["local"] }, { id: "HH16", name: "甥出", types: ["local", "rapid"] },
-                    { id: "HH17", name: "京鷹", types: ["local"] }, { id: "HH18", name: "層菓", types: ["local", "rapid"] },
-                    { id: "HH19", name: "南日ニュータウン", types: ["local", "rapid"] }, { id: "HH20", name: "大組", types: ["local"] },
-                    { id: "HH21", name: "町藁", types: ["local"] }, { id: "HH22", name: "縄貫", types: ["local"] },
-                    { id: "HH23", name: "東日原", types: ["local", "rapid"] }, { id: "HH24", name: "日原", types: ["local", "rapid", "express"] },
-                    { id: "HH25", name: "北日原", types: ["local", "rapid", "express"] }, { id: "HH26", name: "和田野", types: ["local"] },
-                    { id: "HH27", name: "井伊和", types: ["local"] }, { id: "HH28", name: "流泣", types: ["local", "rapid", "express"] },
-                    { id: "HH29", name: "北流泣", types: ["local", "rapid"] }, { id: "HH30", name: "厚止", types: ["local"] },
-                    { id: "HH31", name: "内友口", types: ["local", "rapid"] }, { id: "HH32", name: "内友", types: ["local", "rapid", "express"] },
-                    { id: "HH33", name: "有黄", types: ["local", "rapid", "express"] }, { id: "HH34", name: "真間石", types: ["local"] },
-                    { id: "HH35", name: "南葉間", types: ["local", "rapid"] }, { id: "HH36", name: "葉間", types: ["local", "rapid", "express"] },
-                    { id: "HH37", name: "本葉間", types: ["local", "rapid", "express"] }, { id: "HH38", name: "南平公園", types: ["local"] },
-                    { id: "HH39", name: "宮ノ後", types: ["local", "rapid"] }, { id: "HH40", name: "高柳", types: ["local"] },
-                    { id: "HH41", name: "神田", types: ["local"] }, { id: "HH42", name: "栄町", types: ["local", "rapid"] },
-                    { id: "HH43", name: "霞ヶ嶺", types: ["local", "rapid", "express"] }, { id: "HH44", name: "本町通", types: ["local", "rapid"] },
-                    { id: "HH45", name: "常盤台", types: ["local"] }, { id: "HH46", name: "霞野温泉", types: ["local", "rapid", "express"] },
-                    { id: "HH47", name: "鷺ノ宮", types: ["local"] }, { id: "HH48", name: "向河原", types: ["local"] },
-                    { id: "HH49", name: "千歳橋", types: ["local", "rapid"] }, { id: "HH50", name: "霞野タウン", types: ["local", "rapid", "express"] },
-                    { id: "HH51", name: "鍛冶町", types: ["local", "rapid"] }, { id: "HH52", name: "霞野", types: ["local", "rapid", "express"] }
-                ]
-            },
-            "得元線": {
-                color: "#3bfad1", textDark: true,
-                typeColors: { "local": "#3bfad1", "rapid": "#6906ff", "express": "#ff0000" },
-                typeTextColor: { "local": "black", "rapid": "white", "express": "white" },
-                stations: [
-                    { id: "HE01", name: "元野", types: ["local", "rapid", "express"] }, { id: "HE02", name: "山東", types: ["local"] },
-                    { id: "HE03", name: "北面堀", types: ["local"] }, { id: "HE04", name: "重堀", types: ["local", "rapid"] },
-                    { id: "HE05", name: "西守", types: ["local"] }, { id: "HE06", name: "家居", types: ["local"] },
-                    { id: "HE07", name: "小脇", types: ["local", "rapid"] }, { id: "HE08", name: "陰陽", types: ["local"] },
-                    { id: "HE09", name: "森湧", types: ["local"] }, { id: "HE10", name: "得湧", types: ["local", "rapid", "express"] },
-                    { id: "HE11", name: "南得湧", types: ["local", "rapid", "express"] }, { id: "HE12", name: "谷村", types: ["local"] },
-                    { id: "HE13", name: "橋本境", types: ["local"] }, { id: "HE14", name: "飯田通", types: ["local", "rapid", "express"] },
-                    { id: "HE15", name: "喜多栄", types: ["local"] }, { id: "HE16", name: "南雲田", types: ["local"] },
-                    { id: "HE17", name: "三和飯井", types: ["local"] }, { id: "HE18", name: "考板", types: ["local", "rapid"] },
-                    { id: "HE19", name: "赤石", types: ["local"] }, { id: "HE20", name: "和村町", types: ["local", "rapid", "express"] },
-                    { id: "HE21", name: "東谷川", types: ["local"] }, { id: "HE22", name: "音羽", types: ["local", "rapid"] },
-                    { id: "HE23", name: "今村橋", types: ["local"] }, { id: "HE24", name: "浜路", types: ["local"] },
-                    { id: "HE25", name: "高丸", types: ["local"] }, { id: "HE26", name: "黒坂野", types: ["local"] },
-                    { id: "HE27", name: "緑競", types: ["local"] }, { id: "HE28", name: "和岡", types: ["local", "rapid", "express"] },
-                    { id: "HE29", name: "大木川", types: ["local"] }, { id: "HE30", name: "我老和", types: ["local"] },
-                    { id: "HE31", name: "滝野口", types: ["local"] }, { id: "HE32", name: "広見野", types: ["local"] },
-                    { id: "HE33", name: "舞野", types: ["local", "rapid"] }, { id: "HE34", name: "谷口台", types: ["local"] },
-                    { id: "HE35", name: "上杉野", types: ["local", "rapid", "express"] }, { id: "HE36", name: "杉野", types: ["local"] },
-                    { id: "HE37", name: "青木沢", types: ["local"] }, { id: "HE38", name: "古川西柏原町", types: ["local"] },
-                    { id: "HE39", name: "川内谷", types: ["local"] }, { id: "HE40", name: "宝大川", types: ["local", "rapid", "express"] },
-                    { id: "HE41", name: "雲坂", types: ["local"] }, { id: "HE42", name: "東", types: ["local"] },
-                    { id: "HE43", name: "久世", types: ["local"] }, { id: "HE44", name: "新開原", types: ["local", "rapid"] },
-                    { id: "HE45", name: "野田端", types: ["local"] }, { id: "HE46", name: "馬衛門", types: ["local", "rapid"] },
-                    { id: "HE47", name: "北大淵", types: ["local"] }, { id: "HE48", name: "中通り", types: ["local", "rapid", "express"] },
-                    { id: "HE49", name: "北橋本", types: ["local"] }, { id: "HE50", name: "橋本中央", types: ["local", "rapid", "express"] }
-                ]
-            },
-            "空港線": {
-                color: "#fc00ea", textDark: false,
-                typeColors: { "local": "#fc00ea", "airport_rapid": "#e8782e", "express": "#ff0000" },
-                typeTextColor: { "local": "white", "airport_rapid": "white", "express": "white" },
-                stations: [
-                    { id: "HA01", name: "北日原", types: ["local", "airport_rapid", "express"] }, { id: "HA02", name: "抜田", types: ["local"] },
-                    { id: "HA03", name: "八牧", types: ["local"] }, { id: "HA04", name: "魚", types: ["local", "airport_rapid", "express"] },
-                    { id: "HA05", name: "空港南口", types: ["local"] }, { id: "HA06", name: "日原空港", types: ["local", "airport_rapid", "express"] }
-                ]
-            },
-            "元野港線": {
-                color: "#2b0000", textDark: false,
-                typeColors: { "local": "#2b0000" },
-                typeTextColor: { "local": "white" },
-                stations: [
-                    { id: "HM01", name: "元野", types: ["local"] },
-                    { id: "HM02", name: "白菊澤", types: ["local"] },
-                    { id: "HM03", name: "日原元野港", types: ["local"] }
-                ]
-            },
-            "生竹線": {
-                color: "#8a0106", textDark: false,
-                typeColors: { "local": "#8a0106", "express": "#ff0000" },
-                typeTextColor: { "local": "white", "express": "white" },
-                stations: [
-                    { id: "HS01", name: "北日原", types: ["local", "express"] }, { id: "HS02", name: "大沖", types: ["local"] },
-                    { id: "HS03", name: "木岡", types: ["local"] }, { id: "HS04", name: "前門", types: ["local"] },
-                    { id: "HS05", name: "階折", types: ["local"] }, { id: "HS06", name: "新流泣", types: ["local", "express"] },
-                    { id: "HS07", name: "金創", types: ["local"] }, { id: "HS08", name: "片丘津宮", types: ["local", "express"] },
-                    { id: "HS09", name: "庵", types: ["local"] }, { id: "HS10", name: "与板", types: ["local"] },
-                    { id: "HS11", name: "枚木", types: ["local"] }, { id: "HS12", name: "大黄", types: ["local", "express"] },
-                    { id: "HS13", name: "村奈", types: ["local"] }, { id: "HS14", name: "織錦", types: ["local"] },
-                    { id: "HS15", name: "複合センター前", types: ["local"] }, { id: "HS16", name: "生竹", types: ["local", "express"] },
-                    { id: "HS17", name: "戸羽センター前", types: ["local"] }, { id: "HS18", name: "西田宮本町", types: ["local", "express"] },
-                    { id: "HS19", name: "新田宮", types: ["local"] }, { id: "HS20", name: "下川区役所通り", types: ["local"] },
-                    { id: "HS21", name: "下川橋", types: ["local"] }, { id: "HS22", name: "和戸森林公園", types: ["local"] },
-                    { id: "HS23", name: "和戸市役所前", types: ["local", "express"] }, { id: "HS24", name: "和戸免許センター前", types: ["local"] },
-                    { id: "HS25", name: "和戸", types: ["local", "express"] }
-                ]
-            }
+        "本線": {
+            lineName: "本線",
+            color: "#0066cc",
+            textDark: false,
+            typeColors: { "local": "#0066cc", "rapid": "#6906ff", "express": "#ff0000" },
+            typeTextColor: { "local": "white", "rapid": "white", "express": "white" },
+            stations: [
+                { id: "HH01", name: "蒲生", types: ["local", "express"] },
+                { id: "HH02", name: "未加島", types: ["local"] },
+                { id: "HH03", name: "野傘", types: ["local"] },
+                { id: "HH04", name: "貝道", types: ["local"] },
+                { id: "HH05", name: "殿茶屋", types: ["local", "express"] },
+                { id: "HH06", name: "東殿茶屋", types: ["local"] },
+                { id: "HH07", name: "植和", types: ["local"] },
+                { id: "HH08", name: "組野", types: ["local"] },
+                { id: "HH09", name: "身野山", types: ["local", "express"] },
+                { id: "HH10", name: "栗羽", types: ["local"] },
+                { id: "HH11", name: "忘明", types: ["local"] },
+                { id: "HH12", name: "元野", types: ["local", "rapid", "express"] },
+                { id: "HH13", name: "柿沢", types: ["local"] },
+                { id: "HH14", name: "芝元", types: ["local"] },
+                { id: "HH15", name: "編指", types: ["local"] },
+                { id: "HH16", name: "甥出", types: ["local", "rapid"] },
+                { id: "HH17", name: "京鷹", types: ["local"] },
+                { id: "HH18", name: "層菓", types: ["local", "rapid"] },
+                { id: "HH19", name: "南日ニュータウン", types: ["local", "rapid"] },
+                { id: "HH20", name: "大組", types: ["local"] },
+                { id: "HH21", name: "町藁", types: ["local"] },
+                { id: "HH22", name: "縄貫", types: ["local"] },
+                { id: "HH23", name: "東日原", types: ["local", "rapid"] },
+                { id: "HH24", name: "日原", types: ["local", "rapid", "express"] },
+                { id: "HH25", name: "北日原", types: ["local", "rapid", "express"] },
+                { id: "HH26", name: "和田野", types: ["local"] },
+                { id: "HH27", name: "井伊和", types: ["local"] },
+                { id: "HH28", name: "流泣", types: ["local", "rapid", "express"] },
+                { id: "HH29", name: "北流泣", types: ["local", "rapid"] },
+                { id: "HH30", name: "厚止", types: ["local"] },
+                { id: "HH31", name: "内友口", types: ["local", "rapid"] },
+                { id: "HH32", name: "内友", types: ["local", "rapid", "express"] },
+                { id: "HH33", name: "有黄", types: ["local", "rapid", "express"] },
+                { id: "HH34", name: "真間石", types: ["local"] },
+                { id: "HH35", name: "南葉間", types: ["local", "rapid"] },
+                { id: "HH36", name: "葉間", types: ["local", "rapid", "express"] },
+                { id: "HH37", name: "本葉間", types: ["local", "rapid", "express"] },
+                { id: "HH38", name: "南平公園", types: ["local"] },
+                { id: "HH39", name: "宮ノ後", types: ["local", "rapid"] },
+                { id: "HH40", name: "高柳", types: ["local"] },
+                { id: "HH41", name: "神田", types: ["local"] },
+                { id: "HH42", name: "栄町", types: ["local", "rapid"] },
+                { id: "HH43", name: "霞ヶ嶺", types: ["local", "rapid", "express"] },
+                { id: "HH44", name: "本町通", types: ["local", "rapid"] },
+                { id: "HH45", name: "常盤台", types: ["local"] },
+                { id: "HH46", name: "霞野温泉", types: ["local", "rapid", "express"] },
+                { id: "HH47", name: "鷺ノ宮", types: ["local"] },
+                { id: "HH48", name: "向河原", types: ["local"] },
+                { id: "HH49", name: "千歳橋", types: ["local", "rapid"] },
+                { id: "HH50", name: "霞野タウン", types: ["local", "rapid", "express"] },
+                { id: "HH51", name: "鍛冶町", types: ["local", "rapid"] },
+                { id: "HH52", name: "霞野", types: ["local", "rapid", "express"] }
+            ]
+        },
+        "得元線": {
+            lineName: "得元線",
+            color: "#3bfad1",
+            textDark: true,
+            typeColors: { "local": "#3bfad1", "rapid": "#6906ff", "express": "#ff0000" },
+            typeTextColor: { "local": "black", "rapid": "white", "express": "white" },
+            stations: [
+                { id: "HE01", name: "元野", types: ["local", "rapid", "express"] },
+                { id: "HE02", name: "山東", types: ["local"] },
+                { id: "HE03", name: "北面堀", types: ["local"] },
+                { id: "HE04", name: "重堀", types: ["local", "rapid"] },
+                { id: "HE05", name: "西守", types: ["local"] },
+                { id: "HE06", name: "家居", types: ["local"] },
+                { id: "HE07", name: "小脇", types: ["local", "rapid"] },
+                { id: "HE08", name: "陰陽", types: ["local"] },
+                { id: "HE09", name: "森湧", types: ["local"] },
+                { id: "HE10", name: "得湧", types: ["local", "rapid", "express"] },
+                { id: "HE11", name: "南得湧", types: ["local", "rapid", "express"] },
+                { id: "HE12", name: "谷村", types: ["local"] },
+                { id: "HE13", name: "橋本境", types: ["local"] },
+                { id: "HE14", name: "飯田通", types: ["local", "rapid", "express"] },
+                { id: "HE15", name: "喜多栄", types: ["local"] },
+                { id: "HE16", name: "南雲田", types: ["local"] },
+                { id: "HE17", name: "三和飯井", types: ["local"] },
+                { id: "HE18", name: "考板", types: ["local", "rapid"] },
+                { id: "HE19", name: "赤石", types: ["local"] },
+                { id: "HE20", name: "和村町", types: ["local", "rapid", "express"] },
+                { id: "HE21", name: "東谷川", types: ["local"] },
+                { id: "HE22", name: "音羽", types: ["local", "rapid"] },
+                { id: "HE23", name: "今村橋", types: ["local"] },
+                { id: "HE24", name: "浜路", types: ["local"] },
+                { id: "HE25", name: "高丸", types: ["local"] },
+                { id: "HE26", name: "黒坂野", types: ["local"] },
+                { id: "HE27", name: "緑競", types: ["local"] },
+                { id: "HE28", name: "和岡", types: ["local", "rapid", "express"] },
+                { id: "HE29", name: "大木川", types: ["local"] },
+                { id: "HE30", name: "我老和", types: ["local"] },
+                { id: "HE31", name: "滝野口", types: ["local"] },
+                { id: "HE32", name: "広見野", types: ["local"] },
+                { id: "HE33", name: "舞野", types: ["local", "rapid"] },
+                { id: "HE34", name: "谷口台", types: ["local"] },
+                { id: "HE35", name: "上杉野", types: ["local", "rapid", "express"] },
+                { id: "HE36", name: "杉野", types: ["local"] },
+                { id: "HE37", name: "青木沢", types: ["local"] },
+                { id: "HE38", name: "古川西柏原町", types: ["local"] },
+                { id: "HE39", name: "川内谷", types: ["local"] },
+                { id: "HE40", name: "宝大川", types: ["local", "rapid", "express"] },
+                { id: "HE41", name: "雲坂", types: ["local"] },
+                { id: "HE42", name: "東", types: ["local"] },
+                { id: "HE43", name: "久世", types: ["local"] },
+                { id: "HE44", name: "新開原", types: ["local", "rapid"] },
+                { id: "HE45", name: "野田端", types: ["local"] },
+                { id: "HE46", name: "馬衛門", types: ["local", "rapid"] },
+                { id: "HE47", name: "北大淵", types: ["local"] },
+                { id: "HE48", name: "中通り", types: ["local", "rapid", "express"] },
+                { id: "HE49", name: "北橋本", types: ["local"] },
+                { id: "HE50", name: "橋本中央", types: ["local", "rapid", "express"] }
+            ]
+        },
+        "空港線": {
+            lineName: "空港線",
+            color: "#fc00ea",
+            textDark: false,
+            typeColors: { "local": "#fc00ea", "airport_rapid": "#e8782e", "express": "#ff0000" },
+            typeTextColor: { "local": "white", "airport_rapid": "white", "express": "white" },
+            stations: [
+                { id: "HA01", name: "北日原", types: ["local", "airport_rapid", "express"] },
+                { id: "HA02", name: "抜田", types: ["local"] },
+                { id: "HA03", name: "八牧", types: ["local"] },
+                { id: "HA04", name: "魚", types: ["local", "airport_rapid", "express"] },
+                { id: "HA05", name: "空港南口", types: ["local"] },
+                { id: "HA06", name: "日原空港", types: ["local", "airport_rapid", "express"] }
+            ]
+        },
+        "元野港線": {
+            lineName: "元野港線",
+            color: "#2b0000",
+            textDark: false,
+            typeColors: { "local": "#2b0000" },
+            typeTextColor: { "local": "white" },
+            stations: [
+                { id: "HM01", name: "元野", types: ["local"] },
+                { id: "HM02", name: "白菊澤", types: ["local"] },
+                { id: "HM03", name: "日原元野港", types: ["local"] }
+            ]
+        },
+        "生竹線": {
+            lineName: "生竹線",
+            color: "#8a0106",
+            textDark: false,
+            typeColors: { "local": "#8a0106", "express": "#ff0000" },
+            typeTextColor: { "local": "white", "express": "white" },
+            stations: [
+                { id: "HS01", name: "北日原", types: ["local", "express"] },
+                { id: "HS02", name: "大沖", types: ["local"] },
+                { id: "HS03", name: "木岡", types: ["local"] },
+                { id: "HS04", name: "前門", types: ["local"] },
+                { id: "HS05", name: "階折", types: ["local"] },
+                { id: "HS06", name: "新流泣", types: ["local", "express"] },
+                { id: "HS07", name: "金創", types: ["local"] },
+                { id: "HS08", name: "片丘津宮", types: ["local", "express"] },
+                { id: "HS09", name: "庵", types: ["local"] },
+                { id: "HS10", name: "与板", types: ["local"] },
+                { id: "HS11", name: "枚木", types: ["local"] },
+                { id: "HS12", name: "大黄", types: ["local", "express"] },
+                { id: "HS13", name: "村奈", types: ["local"] },
+                { id: "HS14", name: "織錦", types: ["local"] },
+                { id: "HS15", name: "複合センター前", types: ["local"] },
+                { id: "HS16", name: "生竹", types: ["local", "express"] },
+                { id: "HS17", name: "戸羽センター前", types: ["local"] },
+                { id: "HS18", name: "西田宮本町", types: ["local", "express"] },
+                { id: "HS19", name: "新田宮", types: ["local"] },
+                { id: "HS20", name: "下川区役所通り", types: ["local"] },
+                { id: "HS21", name: "下川橋", types: ["local"] },
+                { id: "HS22", name: "和戸森林公園", types: ["local"] },
+                { id: "HS23", name: "和戸市役所前", types: ["local", "express"] },
+                { id: "HS24", name: "和戸免許センター前", types: ["local"] },
+                { id: "HS25", name: "和戸", types: ["local", "express"] }
+            ]
         }
     }
 };
 
 const hubConnections = [
-    ["KA01", "KB01"], ["KA01", "KS01"], ["KB01", "KS01"],
-    ["KA11", "KG01"],
     
-    // === 日原鉄道 相互乗り換え・結節点接続 ===
+    // === 相互乗り換え・結節点接続 ===
     // 【元野駅】本線、得元線、元野港線の3路線
     ["HH12", "HE01"], ["HH12", "HM01"], ["HE01", "HM01"],
     
@@ -210,6 +285,9 @@ const hubConnections = [
     // 【片丘津宮駅】生竹線、かすみびあおぞら鉄道線の接続
     ["HS08", "KB32"],
     
-    // 【霞野駅】本線、霞野高速鉄道、霞野新都市交通の接続
-    ["HH52", "KA01"], ["HH52", "KS01"]
+    // 【霞野駅】本線、霞野高速鉄道、霞野新都市交通、かすみびあおぞら鉄道の接続
+    ["HH52", "KA01"], ["HH52", "KS01"], ["KA01", "KB01"], ["KA01", "KS01"], ["KB01", "KS01"], ["HH01", "KB01"]
+    
+    //　【陸原工業団地駅】霞野高速鉄道、陸原開発鉄道の接続
+    ["KA11", "KG01"]
 ];
