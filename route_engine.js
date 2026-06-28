@@ -11,7 +11,7 @@ window.onload = function() {
 
 function initData() {
     stations = [];
-    // companyData[会社名][路線名] の階層に対応
+    // 会社 > 路線 > 駅 の構造に対応
     for (let comp in companyData) {
         for (let lineName in companyData[comp]) {
             let lineData = companyData[comp][lineName];
@@ -45,7 +45,6 @@ function updateLines(pos) {
     let comp = document.getElementById(`${pos}Comp`).value;
     let lineSelect = document.getElementById(`${pos}Line`);
     lineSelect.innerHTML = "";
-    // 会社内の路線を全て追加
     for (let lineName in companyData[comp]) {
         let opt = document.createElement("option");
         opt.value = lineName; opt.textContent = lineName;
@@ -208,17 +207,19 @@ function renderActiveRoute() {
             let selectHtml = `<select onchange="onLineTypeChange('${st.line}', this.value)">`;
             let typeKeys = Object.keys(lineData.typeColors);
             typeKeys.forEach(k => {
-                let isDisabled = false; // 必要に応じて停車判定ロジックを統合可能
                 selectHtml += `<option value="${k}" ${k === currentType ? 'selected' : ''}>${k}</option>`;
             });
             selectHtml += `</select>`;
             html += `<div class="line-block"><div class="line-header" style="background:${bg};color:${textCol};"><span>${st.line}</span>${selectHtml}</div><div class="station-container" style="--line-color:${lineData.color}">`;
         }
 
+        // 日原鉄道のナンバリングを「数字なしの英語のみ」に変換
+        let displayId = (st.comp === "日原鉄道") ? id.replace(/[0-9]/g, '') : id;
+        
         let isStop = st.types.includes(currentType);
         let rowClass = isStop ? "st-row" : "st-row pass-station";
         let passLabel = isStop ? "" : "<span class='pass-label'>通過</span>";
-        let rowHtml = `<div class="${rowClass}"><div class="st-badge">${id}</div><div class="st-name">${st.name}</div>${passLabel}</div>`;
+        let rowHtml = `<div class="${rowClass}"><div class="st-badge">${displayId}</div><div class="st-name">${st.name}</div>${passLabel}</div>`;
 
         let isBoundary = (idx === 0 || idx === path.length - 1 || 
                          (path[idx+1] && stations.find(s => s.id === path[idx+1]).line !== st.line) || 
