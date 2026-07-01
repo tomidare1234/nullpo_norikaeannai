@@ -16,7 +16,8 @@ function initData() {
             let data = companyData[comp][line];
             data.stations.forEach(st => {
                 stations.push({ 
-                    id: st.id, name: st.name, line: data.lineName, 
+                    id: st.id, name: st.name, 
+                    line: line, // 【修正】data.lineName ではなく、オブジェクトのキーである line をそのまま使う
                     comp: comp, types: st.types, color: data.color, dark: data.textDark 
                 });
             });
@@ -60,27 +61,106 @@ function updateStations(pos) {
     });
 }
 
+let suggestState = { start: { items: [], hi: -1 }, goal: { items: [], hi: -1 } };
+
 function onTextInput(pos) {
     initData();
     let val = document.getElementById(`${pos}Input`).value.trim();
-    if(!val) return;
-    let match = stations.find(s => s.name.includes(val));
-    if (match) {
-        document.getElementById(`${pos}Comp`).value = match.comp;
-        updateLines(pos);
-        document.getElementById(`${pos}Line`).value = match.line;
-        updateStations(pos);
-        document.getElementById(`${pos}St`).value = match.name;
+    let listEl = document.getElementById(`${pos}Suggest`);
+    let state = suggestState[pos];
+
+    if (!val) { listEl.style.display = "none"; listEl.innerHTML = ""; state.items = []; state.hi = -1; return; }
+
+    let matches = stations.filter(s => s.name.includes(val));
+    // 同じ駅名・同じ路線の重複（会社データ内の重複記載など）を除去
+    let seen = new Set();
+    matches = matches.filter(s => {
+        let key = `${s.comp}|${s.line}|${s.name}`;
+        if (seen.has(key)) return false;
+        seen.add(key); return true;
+    }).slice(0, 15);
+
+    state.items = matches; state.hi = -1;
+    renderSuggestions(pos);
+}
+
+function renderSuggestions(pos) {
+    let listEl = document.getElementById(`${pos}Suggest`);
+    let state = suggestState[pos];
+    if (!state.items.length) {
+        listEl.innerHTML = `<div class="suggest-empty">該当する駅が見つかりません</div>`;
+        listEl.style.display = "block";
+        return;
+    }
+    listEl.innerHTML = state.items.map((s, i) => `
+        <div class="suggest-item ${i === state.hi ? 'hi' : ''}" data-idx="${i}"
+             onmousedown="selectSuggestion('${pos}', ${i})">
+            <span class="suggest-badge" style="background:${s.color};color:${s.dark ? '#333' : 'white'};">${s.id}</span>
+            <span class="suggest-name">${s.name}</span>
+            <span class="suggest-sub">${s.line}（${s.comp}）</span>
+        </div>
+    `).join("");
+    listEl.style.display = "block";
+}
+
+function selectSuggestion(pos, idx) {
+    let state = suggestState[pos];
+    let match = state.items[idx];
+    if (!match) return;
+    document.getElementById(`${pos}Comp`).value = match.comp;
+    updateLines(pos);
+    document.getElementById(`${pos}Line`).value = match.line;
+    updateStations(pos);
+    document.getElementById(`${pos}St`).value = match.name;
+    document.getElementById(`${pos}Input`).value = match.name;
+
+    let listEl = document.getElementById(`${pos}Suggest`);
+    listEl.style.display = "none"; listEl.innerHTML = "";
+    state.items = []; state.hi = -1;
+}
+
+function onSuggestKeydown(evt, pos) {
+    let state = suggestState[pos];
+    if (!state.items.length) return;
+    if (evt.key === "ArrowDown") {
+        evt.preventDefault();
+        state.hi = (state.hi + 1) % state.items.length;
+        renderSuggestions(pos);
+    } else if (evt.key === "ArrowUp") {
+        evt.preventDefault();
+        state.hi = (state.hi - 1 + state.items.length) % state.items.length;
+        renderSuggestions(pos);
+    } else if (evt.key === "Enter") {
+        evt.preventDefault();
+        selectSuggestion(pos, state.hi >= 0 ? state.hi : 0);
+    } else if (evt.key === "Escape") {
+        document.getElementById(`${pos}Suggest`).style.display = "none";
     }
 }
+
+document.addEventListener("click", (evt) => {
+    ["start", "goal"].forEach(pos => {
+        let wrap = document.getElementById(`${pos}Input`).closest(".input-row");
+        if (wrap && !wrap.contains(evt.target)) {
+            document.getElementById(`${pos}Suggest`).style.display = "none";
+        }
+    });
+});
 
 function onSelectInput(pos) {
     let stName = document.getElementById(`${pos}St`).value;
     document.getElementById(`${pos}Input`).value = stName;
+    document.getElementById(`${pos}Suggest`).style.display = "none";
 }
 
 function searchRoute() {
     initData();
+    
+    globalPaths = []; 
+    activeLineTypes = {}; 
+    document.getElementById("tabs").innerHTML = "";
+    document.getElementById("result").innerHTML = "";
+
     let startName = document.getElementById("startSt").value;
     let goalName = document.getElementById("goalSt").value;
     if (!startName || !goalName || startName === goalName) return alert("出発駅と目的駅を別々に選択してください");
@@ -96,23 +176,46 @@ function searchRoute() {
             }
         }
     }
-    hubConnections.forEach(([a, b]) => { if(graph[a] && graph[b]) { graph[a].push({ id: b, train: false }); graph[b].push({ id: a, train: false }); } });
+    hubConnections.forEach(([a, b]) => { 
+        if(graph[a] && graph[b]) { 
+            graph[a].push({ id: b, train: false }); 
+            graph[b].push({ id: a, train: false }); 
+        } 
+    });
 
     let startIds = stations.filter(s => s.name === startName).map(s => s.id);
-    globalPaths = [];
     let queue = startIds.map(id => ({ path: [id], lastTransfer: false }));
+    
+    // 【修正】「どの駅IDに、どの経路長（コスト）で到達したか」を記録するマップ
+    // これにより、同じ駅IDへの無駄な大回りルートのみを正確にカットします
+    let minCost = {};
+    startIds.forEach(id => { minCost[id] = 1; });
 
     while (queue.length > 0 && globalPaths.length < 3) {
         let node = queue.shift();
         let currId = node.path[node.path.length - 1];
-        if (stations.find(s => s.id === currId).name === goalName) {
-            if (!globalPaths.some(p => p.join('-') === node.path.join('-'))) globalPaths.push(node.path);
+        let currSt = stations.find(s => s.id === currId);
+
+        if (currSt.name === goalName) {
+            if (!globalPaths.some(p => p.join('-') === node.path.join('-'))) {
+                globalPaths.push(node.path);
+            }
             continue;
         }
+
         (graph[currId] || []).forEach(edge => {
-            if (!node.path.includes(edge.id)) {
-                if (!edge.train && node.lastTransfer) return; 
-                queue.push({ path: [...node.path, edge.id], lastTransfer: !edge.train });
+            let nextId = edge.id;
+            let nextCost = node.path.length + 1;
+
+            // すでにその駅IDにより短い（または同じ）経路で到達している場合はスキップ
+            if (minCost[nextId] !== undefined && minCost[nextId] <= nextCost) return;
+
+            // 経路自体の重複チェック
+            if (!node.path.includes(nextId)) {
+                if (!edge.train && node.lastTransfer) return; // 連続する徒歩乗り換えは不可
+                
+                minCost[nextId] = nextCost;
+                queue.push({ path: [...node.path, nextId], lastTransfer: !edge.train });
             }
         });
     }
@@ -157,11 +260,11 @@ function renderActiveRoute() {
     });
 
     for (let line in lineSegments) {
-        let seg = lineSegments[line];
-        let endpoints = [seg[0].st, seg[seg.length - 1].st]; 
-        if (!activeLineTypes[line]) activeLineTypes[line] = "local";
-        let currentType = activeLineTypes[line];
-        
+    let seg = lineSegments[line];
+    let endpoints = [seg[0].st, seg[seg.length - 1].st]; 
+    
+    // すでにユーザーが選択している場合は自動判定で上書きしない
+    if (!activeLineTypes[line]) {
         let compName = seg[0].st.comp;
         let lineData = companyData[compName][line];
         let availableTypes = Object.keys(lineData.typeColors);
@@ -176,6 +279,7 @@ function renderActiveRoute() {
         }
         activeLineTypes[line] = safeType;
     }
+}
 
     function flushStack() {
         if (intermediateStack.length === 0) return "";
@@ -207,7 +311,6 @@ function renderActiveRoute() {
             html += `<div class="line-block"><div class="line-header" style="background:${bg};color:${textCol};"><span>${st.line}</span>${selectHtml}</div><div class="station-container" style="--line-color:${lineData.color}">`;
         }
 
-        // 日原鉄道のナンバリングを「数字なしの英語のみ」に変換
         let displayId = (st.comp === "日原鉄道") ? id.replace(/[0-9]/g, '') : id;
         
         let isStop = st.types.includes(currentType);
