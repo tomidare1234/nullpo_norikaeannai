@@ -13,8 +13,17 @@
         .section-panel { background: #fafbfc; border: 1px solid #e1e8ed; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
         .section-title { font-weight: bold; font-size: 0.9rem; margin-bottom: 10px; color: var(--primary-color); display: flex; align-items: center; gap: 5px; }
         
-        .input-row { margin-bottom: 8px; }
+        .input-row { margin-bottom: 8px; position: relative; }
         .input-row input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccd6dd; border-radius: 6px; font-size: 0.95rem; }
+
+        .suggest-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ccd6dd; border-top: none; border-radius: 0 0 6px 6px; box-shadow: 0 6px 14px rgba(0,0,0,0.08); max-height: 220px; overflow-y: auto; z-index: 10; display: none; }
+        .suggest-item { padding: 9px 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f0f2f5; }
+        .suggest-item:last-child { border-bottom: none; }
+        .suggest-item:hover, .suggest-item.hi { background: #f4f6f9; }
+        .suggest-badge { flex-shrink: 0; padding: 2px 7px; border-radius: 10px; color: white; font-size: 0.7rem; font-weight: bold; }
+        .suggest-name { font-weight: 500; }
+        .suggest-sub { font-size: 0.75rem; color: #8899a6; margin-left: auto; text-align: right; }
+        .suggest-empty { padding: 10px 12px; font-size: 0.85rem; color: #aab8c2; }
         
         /* 【修正】長い名前の企業でも枠をはみ出さないように設定 */
         .select-row { display: flex; gap: 6px; width: 100%; box-sizing: border-box; }
@@ -65,7 +74,8 @@
     <div class="section-panel">
         <div class="section-title">🛫 出発駅</div>
         <div class="input-row">
-            <input type="text" id="startInput" placeholder="駅名を入力（例: 霞野）" oninput="onTextInput('start')">
+            <input type="text" id="startInput" placeholder="駅名を入力（例: 霞野）" autocomplete="off" oninput="onTextInput('start')" onfocus="onTextInput('start')" onkeydown="onSuggestKeydown(event,'start')">
+            <div class="suggest-list" id="startSuggest"></div>
         </div>
         <div class="select-row">
             <select id="startComp" onchange="updateLines('start')"></select>
@@ -77,7 +87,8 @@
     <div class="section-panel">
         <div class="section-title">🛬 目的駅</div>
         <div class="input-row">
-            <input type="text" id="goalInput" placeholder="駅名を入力（例: 陸原）" oninput="onTextInput('goal')">
+            <input type="text" id="goalInput" placeholder="駅名を入力（例: 陸原）" autocomplete="off" oninput="onTextInput('goal')" onfocus="onTextInput('goal')" onkeydown="onSuggestKeydown(event,'goal')">
+            <div class="suggest-list" id="goalSuggest"></div>
         </div>
         <div class="select-row">
             <select id="goalComp" onchange="updateLines('goal')"></select>
