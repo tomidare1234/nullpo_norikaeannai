@@ -11,19 +11,13 @@ window.onload = function() {
 
 function initData() {
     stations = [];
-    // 会社 > 路線 > 駅 の構造に対応
     for (let comp in companyData) {
-        for (let lineName in companyData[comp]) {
-            let lineData = companyData[comp][lineName];
-            lineData.stations.forEach(st => {
+        for (let line in companyData[comp]) {
+            let data = companyData[comp][line];
+            data.stations.forEach(st => {
                 stations.push({ 
-                    id: st.id, 
-                    name: st.name, 
-                    line: lineName, 
-                    comp: comp, 
-                    types: st.types, 
-                    color: lineData.color, 
-                    dark: lineData.textDark 
+                    id: st.id, name: st.name, line: data.lineName, 
+                    comp: comp, types: st.types, color: data.color, dark: data.textDark 
                 });
             });
         }
