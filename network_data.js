@@ -88,8 +88,6 @@ const companyData = {
             ]
         }
     },
-const companyData = {
-    // ...（他の会社データは前述の通り）...
     "日原鉄道": {
         "本線": {
             lineName: "本線", color: "#0066cc", textDark: false,
@@ -262,26 +260,44 @@ const companyData = {
                 { id: "HS25", name: "和戸", types: ["local", "express"] }
             ]
         }
+    },
+    "日原市営地下鉄": {
+        "東西線": {
+            lineName: "日原市営地下鉄東西線", color: "#55ff40", textDark: true,
+            typeColors: { "local": "#55ff40", "express": "#f58d3d" },
+            typeTextColor: { "local": "white", "express": "white" },
+            stations: [
+                { id: "T01", name: "廣黄", types: ["local", "express"] }, { id: "T02", name: "鳥沢", types: ["local"] },
+                { id: "T03", name: "岩佐", types: ["local"] }, { id: "T04", name: "玄野坂", types: ["local"] },
+                { id: "T05", name: "東村", types: ["local"] }, { id: "T06", name: "千合", types: ["local", "express"] },
+                { id: "T07", name: "皆川", types: ["local"] }, { id: "T08", name: "木田", types: ["local", "express"] },
+                { id: "T09", name: "解唐", types: ["local"] }, { id: "T10", name: "基田", types: ["local"] },
+                { id: "T11", name: "県庁前", types: ["local", "express"] }, { id: "T12", name: "栄川", types: ["local"] },
+                { id: "T13", name: "日原", types: ["local", "express"] }, { id: "T14", name: "北日原", types: ["local", "express"] },
+                { id: "T15", name: "餡子", types: ["local"] }, { id: "T16", name: "鹿元", types: ["local"] },
+                { id: "T17", name: "虎越", types: ["local"] }, { id: "T18", name: "馬車", types: ["local"] },
+                { id: "T19", name: "矢元", types: ["local", "express"] }, { id: "T20", name: "大氏", types: ["local"] },
+                { id: "T21", name: "西区役所前", types: ["local", "express"] }
+            ]
+        }
     }
 };
 
 const hubConnections = [
-    ["KA01", "KB01"], ["KA01", "KS01"], ["KB01", "KS01"],
-    ["KA11", "KG01"],
-    
+    ["KA01", "KB01"], ["KA01", "KS01"], ["KB01", "KS01"], ["KA11", "KG01"],    
     // === 日原鉄道 相互乗り換え・結節点接続 ===
     // 【元野駅】本線、得元線、元野港線の3路線
     ["HH12", "HE01"], ["HH12", "HM01"], ["HE01", "HM01"],
     
-    // 【日原駅】本線、かすみびあおぞら鉄道線の接続
-    ["HH24", "KB41"],
+    // 【日原駅】本線、かすみびあおぞら鉄道線、日原市営地下鉄の接続
+    ["HH24", "KB41"], ["HH24", "T13"], ["KB41", "T13"],
     
-    // 【北日原駅】本線、空港線、生竹線の3路線
-    ["HH25", "HA01"], ["HH25", "HS01"], ["HA01", "HS01"],
+    // 【北日原駅】本線、空港線、生竹線、日原市営地下鉄の4路線
+    ["HH25", "HA01"], ["HH25", "HS01"], ["HA01", "HS01"], ["HH25", "T14"], ["HA01", "T14"], ["HS01", "T14"],
     
     // 【片丘津宮駅】生竹線、かすみびあおぞら鉄道線の接続
     ["HS08", "KB32"],
     
-    // 【霞野駅】本線、霞野高速鉄道、霞野新都市交通の接続
-    ["HH52", "KA01"], ["HH52", "KS01"]
+    // 【霞野駅】本線、霞野高速鉄道、霞野新都市交通、かすみびあおぞら鉄道の接続
+    ["HH52", "KA01"], ["HH52", "KS01"], ["HH52", "KB01"]
 ];
