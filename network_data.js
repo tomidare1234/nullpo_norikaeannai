@@ -210,12 +210,13 @@ const companyData = {
             typeColors: { "local": "#fc00ea", "airport_rapid": "#e8782e", "express": "#ff0000" },
             typeTextColor: { "local": "white", "airport_rapid": "white", "express": "white" },
             stations: [
-                { id: "HA01", name: "北日原", types: ["local", "airport_rapid", "express"] },
-                { id: "HA02", name: "抜田", types: ["local"] },
-                { id: "HA03", name: "八牧", types: ["local"] },
-                { id: "HA04", name: "魚", types: ["local", "airport_rapid", "express"] },
-                { id: "HA05", name: "空港南口", types: ["local"] },
-                { id: "HA06", name: "日原空港", types: ["local", "airport_rapid", "express"] }
+                { id: "HA01", name: "日原", types: ["local", "airport_rapid", "express"] },
+                { id: "HA02", name: "北日原", types: ["local", "airport_rapid", "express"] },
+                { id: "HA03", name: "抜田", types: ["local"] },
+                { id: "HA04", name: "八牧", types: ["local"] },
+                { id: "HA05", name: "魚", types: ["local", "airport_rapid", "express"] },
+                { id: "HA06", name: "空港南口", types: ["local"] },
+                { id: "HA07", name: "日原空港", types: ["local", "airport_rapid", "express"] }
             ]
         },
         "元野港線": {
@@ -259,11 +260,21 @@ const companyData = {
                 { id: "HS24", name: "和戸免許センター前", types: ["local"] },
                 { id: "HS25", name: "和戸", types: ["local", "express"] }
             ]
-        }
+        
+        },
+        "北日原線": {
+            lineName: "北日原線", color: "#9900ff", textDark: false,
+            typeColors: { "Limited_Express": "#ff0000" },
+            typeTextColor: { "Limited_Express": "white" },
+            stations: [
+                { id: "HN01", name: "あざみない日原", types: ["Limited_Express"] },
+                { id: "HN02", name: "北日原", types: ["Limited_Express"] },
+            ]
+        },        
     },
     "日原市営地下鉄": {
         "東西線": {
-            lineName: "日原市営地下鉄東西線", color: "#55ff40", textDark: true,
+            lineName: "日原市営地下鉄東西線", color: "#55ff40", textDark: false,
             typeColors: { "local": "#55ff40", "express": "#f58d3d" },
             typeTextColor: { "local": "white", "express": "white" },
             stations: [
@@ -280,6 +291,26 @@ const companyData = {
                 { id: "T21", name: "西区役所前", types: ["local", "express"] }
             ]
         }
+    },
+    "日原開発鉄道": {
+        "日原開発鉄道線": {
+            lineName: "日原開発鉄道線", color: "#2e50d6", textDark: false,
+            typeColors: { "local": "#2e50d6", "Semi_Express": "#1576d1" },
+            typeTextColor: { "local": "white", "Semi_Express": "white" },
+            stations: [
+                { id: "HK01", name: "日原", types: ["local", "Semi_Express"] }, { id: "HK02", name: "西日原", types: ["local"] },
+                { id: "HK03", name: "菊塚", types: ["local", "Semi_Express"] }, { id: "HK04", name: "上屋代", types: ["local"] },
+                { id: "HK05", name: "新和田野", types: ["local"] }, { id: "HK06", name: "里宮", types: ["local"] },
+                { id: "HK07", name: "塩屋町", types: ["local", "Semi_Express"] }, { id: "HK08", name: "八栗天神", types: ["local"] },
+                { id: "HK09", name: "東八栗", types: ["local"] }, { id: "HK10", name: "梅ヶ林", types: ["local", "Semi_Express"] },
+                { id: "HK11", name: "魚町東口", types: ["local", "Semi_Express"] }, { id: "HK12", name: "高野橋", types: ["local", "Semi_Express"] },
+                { id: "HK13", name: "山谷", types: ["local", "Semi_Express"] }, { id: "HK14", name: "峰島", types: ["local", "Semi_Express"] },
+                { id: "HK15", name: "春日大野", types: ["local", "Semi_Express"] }, { id: "HK16", name: "寝屋敷", types: ["local", "Semi_Express"] },
+                { id: "HK17", name: "下長原", types: ["local", "Semi_Express"] }, { id: "HK18", name: "樹", types: ["local", "Semi_Express"] },
+                { id: "HK19", name: "笠村", types: ["local", "Semi_Express"] }, { id: "HK20", name: "城西", types: ["local", "Semi_Express"] },
+                { id: "HK21", name: "枝高", types: ["local", "Semi_Express"] }
+            ]
+        }
     }
 };
 
@@ -289,11 +320,11 @@ const hubConnections = [
     // 【元野駅】本線、得元線、元野港線の3路線
     ["HH12", "HE01"], ["HH12", "HM01"], ["HE01", "HM01"],
     
-    // 【日原駅】本線、かすみびあおぞら鉄道線、日原市営地下鉄の接続
-    ["HH24", "KB41"], ["HH24", "T13"], ["KB41", "T13"],
+    // 【日原駅】日原鉄道本線、空港線、北日原線、かすみびあおぞら鉄道線、日原開発鉄道線、日原市営地下鉄の接続
+    ["HH24", "KB41"], ["HH24", "T13"], ["HH24", "HN01"], ["HH24", "HK01"], ["KB41", "T13"], ["KB41", "HN01"], ["HA01", "KB41"], ["HA01", "T13"], ["HA01", "HK01"], ["HH24", "HA01"], ["HN01", "HK01"], ["HN01", "KB41"], ["HN01", "HA01"], ["HN01", "T13"], ["HK01", "T13"],
     
     // 【北日原駅】本線、空港線、生竹線、日原市営地下鉄の4路線
-    ["HH25", "HA01"], ["HH25", "HS01"], ["HA01", "HS01"], ["HH25", "T14"], ["HA01", "T14"], ["HS01", "T14"],
+    ["HH25", "HA02"], ["HH25", "HS01"], ["HA02", "HS01"], ["HH25", "T14"], ["HA02", "T14"], ["HS01", "T14"], ["HH25", "HN02"], ["HA02", "HN02"], ["HS01", "HN02"], ["T14", "HN02"],
     
     // 【片丘津宮駅】生竹線、かすみびあおぞら鉄道線の接続
     ["HS08", "KB32"],
